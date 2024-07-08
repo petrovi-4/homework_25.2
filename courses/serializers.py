@@ -21,13 +21,13 @@ class CourseSerializer(serializers.ModelSerializer):
     signed = SerializerMethodField()
 
     def get_number_of_lessons(self, course):
+        return Lesson.objects.filter(course=course).count()
+
+    def get_signed(self, course):
         user = self.context['request'].user
         if Subscription.objects.filter(course=course).filter(user=user):
             return True
         return False
-
-    def get_signed(self, course):
-        return course.subscribers.filter(id=self.context['request'].user.id).exists()
 
     class Meta:
         model = Course
